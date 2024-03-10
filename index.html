@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html ng-app="imageApp">
+<head>
+  
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5; /* Lighter background for better contrast */
+  margin: 0;
+  padding: 20px;
+}
+
+.gallery-title {
+  text-align: center;
+  margin-bottom: 30px; /* Increased margin for better spacing */
+  font-size: 30px; /* Larger font size for title */
+  color: #333; /* Darker color for better readability */
+}
+
+.thumbnail {
+  width: 100px; /* Slightly larger thumbnails for better visibility */
+  height: 100px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 15px; /* More pronounced rounded corners */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Softer shadow for a modern look */
+}
+
+.thumbnail:hover {
+  transform: scale(1.1); /* More noticeable scale effect on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Deeper shadow for a popping effect */
+}
+
+.fullsize {
+  display: none;
+  margin: 20px auto;
+  max-width: 90%; /* Ensure the image fits well in all screen sizes */
+  border-radius: 20px; /* Consistent rounded corners with thumbnails */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* More pronounced shadow for focus */
+}
+
+.fullsize.active {
+  display: block;
+}
+
+.container {
+  text-align: center;
+}
+
+.arrow {
+  cursor: pointer;
+  margin: 0 20px; /* Reduced margin for better spacing */
+  font-size: 48px; /* Adjusted size for better control */
+  color: #888; /* Softer color for a modern look */
+  transition: color 0.3s, transform 0.2s; /* Smooth transition for color and added transform effect */
+}
+
+.arrow:hover {
+  color: #555; /* Darker on hover for better interaction feedback */
+  transform: scale(1.2); /* Slight scale to indicate clickable */
+}
+
+@media (max-width: 768px) {
+  .thumbnail {
+    width: 75px;
+    height: 75px; /* Smaller thumbnails on smaller screens */
+  }
+
+  .arrow {
+    margin: 0 10px; /* Reduced margin for smaller screens */
+  }
+  .scroll-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 20px 0;
+    }
+    .thumbnail-container {
+      display: inline-block;
+    }
+}
+</style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Import useState and useEffect from React
+        const { useState, useEffect } = React;
+        
+        const Gallery = () => {
+          const [galleryImages, setGalleryImages] = useState([
+            { thumbnail: 'https://picsum.photos/id/60/50/50', fullsize: 'https://picsum.photos/id/60/350/350' },
+            { thumbnail: 'https://picsum.photos/id/63/50/50', fullsize: 'https://picsum.photos/id/63/350/350' },
+            { thumbnail: 'https://picsum.photos/id/68/50/50', fullsize: 'https://picsum.photos/id/68/350/350' },
+            { thumbnail: 'https://picsum.photos/id/69/50/50', fullsize: 'https://picsum.photos/id/69/350/350' },
+            { thumbnail: 'https://picsum.photos/id/74/50/50', fullsize: 'https://picsum.photos/id/74/350/350' },
+            { thumbnail: 'https://picsum.photos/id/77/50/50', fullsize: 'https://picsum.photos/id/77/350/350' },
+            { thumbnail: 'https://picsum.photos/id/83/50/50', fullsize: 'https://picsum.photos/id/83/350/350' },
+            { thumbnail: 'https://picsum.photos/id/88/50/50', fullsize: 'https://picsum.photos/id/88/350/350' },
+            { thumbnail: 'https://picsum.photos/id/92/50/50', fullsize: 'https://picsum.photos/id/92/350/350' },
+            { thumbnail: 'https://picsum.photos/id/94/50/50', fullsize: 'https://picsum.photos/id/94/350/350' }
+          ]);
+          const [activeImageIndex, setActiveImageIndex] = useState(null);
+        
+          useEffect(() => {
+            const interval = setInterval(() => {
+              setActiveImageIndex(prevIndex => (prevIndex === null ? 0 : (prevIndex + 1) % galleryImages.length));
+            }, 2000);
+        
+            return () => clearInterval(interval);
+          }, [galleryImages.length]);
+        
+          const activateImage = index => {
+            setActiveImageIndex(index);
+          };
+        
+          return (
+            <div className="container">
+              <div className="gallery-title">Gallery</div>
+              <div className="scroll-container">
+                {galleryImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.thumbnail}
+                    className="thumbnail"
+                    onClick={() => activateImage(index)}
+                    alt={`Thumbnail ${index}`}
+                  />
+                ))}
+              </div>
+              <div>
+                {galleryImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.fullsize}
+                    className={`fullsize ${activeImageIndex === index ? 'active' : ''}`}
+                    alt={`Fullsize ${index}`}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        };
+        
+        ReactDOM.createRoot(document.getElementById('root')).render(
+            <React.StrictMode>
+              <Gallery />
+            </React.StrictMode>
+        );
+    </script>
+    
+        
+
+</body>
+</html>
+
